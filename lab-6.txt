@@ -1,0 +1,161 @@
+SELECT *
+FROM dbo.kontakty
+WHERE id_klient = 3
+
+--2
+SELECT field_of_industry.field_of_industry, klient.first_name, kontakty.kontakty
+FROM dbo.field_of_industry,  dbo.klient, dbo.kontakty
+where  field_of_industry='Бухгалтерия'
+and klient.id_field_of_industry=field_of_industry.id_field
+and kontakty.id_klient=klient.id_klient
+
+--3
+SELECT district.district, klient.first_name, kontakty.kontakty
+FROM dbo.district, dbo.klient, dbo.kontakty
+WHERE district='Первомайский'
+and klient.id_district=district.id_district
+and kontakty.id_klient=klient.id_klient
+
+--4
+
+SELECT district.district, klient.middle_name, kontakty.kontakty
+FROM dbo.district,dbo.klient, dbo.kontakty
+WHERE district='Сверловский'
+and  klient.id_district=district.id_district
+and kontakty.id_klient=klient.id_klient
+
+--5
+
+SELECT district.district, field_of_industry.field_of_industry,klient.middle_name, kontakty.kontakty
+FROM dbo.district, dbo.field_of_industry, dbo.kontakty,dbo.klient
+WHERE district='Сверловский'
+and field_of_industry='Бухгалтерия'
+and  klient.id_district=district.id_district
+and klient.id_field_of_industry=field_of_industry.id_field
+and kontakty.id_klient=klient.id_klient
+
+--6
+SELECT  district.district, klient.first_name
+FROM  dbo.district,dbo.klient
+WHERE district='Первомайский' 
+and klient.first_name LIKE 'И%'
+and district.id_district=klient.id_district
+
+--7
+SELECT district.id_district as id, district.district,
+COUNT(klient.id_klient) as kolichestvo
+FROM district, klient
+where district.id_district= klient.id_district
+GROUP BY district.id_district,  district.district
+
+--8
+SELECT field_of_industry.id_field as id, field_of_industry.field_of_industry,
+COUNT(klient.id_klient) as kolichestvo
+FROM field_of_industry, klient
+where field_of_industry.id_field= klient.id_field_of_industry
+GROUP BY field_of_industry.id_field,  field_of_industry.field_of_industry
+
+--9
+SELECT klient.first_name, kontakty.id_kontakty
+FROM dbo.klient, dbo.kontakty
+WHERE klient.id_klient=kontakty.id_klient
+and kontakty.id_kontakty=5
+
+--10
+SELECT district.district, tip_klienta.tip_klienta
+FROM district,tip_klienta ,klient, kontakty
+WHERE district.id_district=klient.id_district
+and tip_klienta.id_tip_klienta=klient.id_tip_klienta
+and klient.id_klient=kontakty.id_klient
+and kontakty.id_kontakty=3
+
+--11
+SELECT district.district, tip_klienta.tip_klienta
+FROM district, tip_klienta,kontakty,klient
+WHERE district.id_district=klient.id_district
+and tip_klienta.id_tip_klienta=klient.id_tip_klienta
+and kontakty.id_klient=klient.id_klient
+and kontakty.kontakty='0312235689'
+--12
+SELECT district.district, tip_klienta.tip_klienta,field_of_industry,klient.first_name
+FROM district, field_of_industry, tip_klienta,klient,kontakty
+WHERE district.id_district=klient.id_district
+and tip_klienta.id_tip_klienta=klient.id_tip_klienta
+and field_of_industry.id_field=klient.id_field_of_industry
+and klient.id_klient=kontakty.id_klient
+and kontakty.id_kontakty=1
+
+
+--13
+SELECT TOP 5 klient.first_name, kontakty.kontakty
+FROM dbo.klient ,dbo.kontakty
+WHERE klient.id_klient=kontakty.id_klient
+
+--14
+SELECT kontakty.kontakty
+FROM kontakty, district, klient
+WHERE kontakty.id_klient=klient.id_klient
+and klient.id_district=district.id_district
+and district='Первомайский'
+
+
+
+--7 lab
+--1
+SELECT  
+COUNT( DISTINCT klient.id_klient) as kol_klient,
+COUNT(DISTINCT district.id_district)as kol_dist,
+Count(DISTINCT  tip_klienta.id_tip_klienta) as kol_tip,
+COUNT(DISTINCT field_of_industry.field_of_industry) as kol_field,
+COUNT(DISTINCT kontakty.id_kontakty) as kol_kontakt
+FROM district, klient, tip_klienta,field_of_industry,kontakty
+--3
+SELECT district.id_district as id, district.district,
+COUNT(klient.id_klient) as kolichestvo
+FROM district, klient
+where district.id_district= klient.id_district
+GROUP BY district.id_district,  district.district
+--2 
+SELECT district.district,
+COUNT(DISTINCT klient.id_klient) as kol
+FROM district, klient
+where district.district='Первомайский' and
+district.id_district= klient.id_district
+GROUP BY district.district
+
+--4 
+SELECT klient.record_date,
+COUNT( klient.id_klient) as koli
+FROM dbo.klient
+where klient.record_date >'2016-11-22' 
+GROUP BY klient.record_date
+
+--5
+SELECT klient.first_name,
+COUNT (kontakty.id_kontakty) as kol_kont
+FROM klient,kontakty
+where klient.id_klient=kontakty.id_klient
+GROUP BY klient.first_name
+--6
+SELECT klient.first_name,tip_klienta.tip_klienta,
+COUNT (kontakty.id_kontakty) as kol
+FROM klient, kontakty,tip_klienta
+where kontakty.id_klient=klient.id_klient
+and klient.id_tip_klienta=tip_klienta.id_tip_klienta
+GROUP BY klient.first_name, tip_klienta.tip_klienta
+
+--7
+SELECT klient.first_name,kontakty.kontakty,
+COUNT(klient.id_klient) as kol_kl
+FROM klient, kontakty
+where kontakty.kontakty IS  NULL
+and klient.id_klient=kontakty.id_klient
+GROUP BY klient.first_name, kontakty.kontakty
+
+--8
+SELECT klient.first_name, klient.record_date,
+COUNT( kontakty.id_kontakty) as kol_kont
+FROM klient, kontakty
+where klient.record_date >'2019-10-10' 
+and klient.id_klient=kontakty.id_klient
+GROUP BY klient.first_name,klient.record_date
